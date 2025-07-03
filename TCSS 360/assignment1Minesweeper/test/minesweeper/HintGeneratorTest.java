@@ -53,8 +53,7 @@ public final class HintGeneratorTest {
         final ByteArrayInputStream input = new ByteArrayInputStream(mySampleField.getBytes());
         System.setIn(input);
         final ByteArrayOutputStream output = new ByteArrayOutputStream();
-        final PrintStream printStream = new PrintStream(output);
-        System.setOut(printStream);
+        System.setOut(new PrintStream(output));
 
         // get output
         HintGenerator.main();
