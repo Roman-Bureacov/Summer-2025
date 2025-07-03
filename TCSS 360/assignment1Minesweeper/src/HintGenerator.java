@@ -1,3 +1,16 @@
+/*
+    Summer 2025
+    Static class that generates a hint field
+    for a given minefield, supplied in the format
+
+    rowCount colCount
+    minefield
+
+    minefield is a multi-line argument conforming to
+    the counts preceding it and using `.` to denote
+    empty tiles and `*` to denote mines.
+ */
+
 import java.util.Scanner;
 
 /**
