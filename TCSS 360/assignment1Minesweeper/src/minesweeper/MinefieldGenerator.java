@@ -5,6 +5,8 @@
         rowCount colCount minefieldDensity
  */
 
+package minesweeper;
+
 import java.util.Random;
 
 public final class MinefieldGenerator {

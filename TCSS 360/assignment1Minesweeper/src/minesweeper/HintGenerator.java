@@ -11,6 +11,8 @@
     empty tiles and `*` to denote mines.
  */
 
+package minesweeper;
+
 import java.util.Scanner;
 
 /**
