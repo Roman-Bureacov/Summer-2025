@@ -29,25 +29,53 @@ import org.junit.jupiter.api.Test;
  */
 public final class HintGeneratorTest {
     /** directory of all test cases. */
-    private static final String PREFIX = "TCSS 360/assignment1Minesweeper/test/minesweeper/cases";
+    private static final String PREFIX =
+            Path.of("TCSS 360", "assignment1Minesweeper", "test", "minesweeper", "cases").toString();
 
     String myInputField;
     String myExpectedField;
 
     /**
-     * Tests all the cases provided in the cases folder. Test cases are of the format
+     * Tests all the cases provided in the cases folder. Test cases are of the format:
      * <ul>
      *     <li> testName_input.txt for the input</li>
      *     <li> testName_output.txt for the expected output</li>
      * </ul>
+     * Where testName may consist of only letters, numbers, and periods.
+     * @throws IOException No testing directory found or missing test pairings
      */
     @Test
-    public void testCases() {
+    public void testCases() throws IOException {
         final Set<String> testCaseNames = new HashSet<>();
 
         // get the test case names
-        final File[] testCases = (new File(PREFIX)).listFiles();
-        assert testCases != null;
+        final File testDir = new File(PREFIX);
+        final File[] testCases = testDir.listFiles();
+
+        // if the there's something wrong with IO and finding the test cases
+        if (!testDir.exists()) {
+            throw new IOException(
+                    """
+                    No testing directory found.
+                    Expected local directory %s
+                    No such absolute directory found: %s
+                    """.formatted(
+                            PREFIX,
+                            System.getProperty("user.dir") + PREFIX
+                    )
+            );
+        } else if (testCases == null) {
+            throw new IllegalStateException(
+                    """
+                    No test cases found in directory:
+                    Local: %s
+                    Absolute: %s
+                    """.formatted(
+                            PREFIX,
+                            System.getProperty("user.dir") + PREFIX
+                    ));
+        }
+
         for (final File name : testCases) {
             // add only the test case name to the set
             testCaseNames.add(name.getName().split("_")[0]);
@@ -63,6 +91,7 @@ public final class HintGeneratorTest {
                         "Test failed at: " + testName,
                         theExc
                 );
+                throw theExc;
             }
         }
     }
@@ -71,11 +100,11 @@ public final class HintGeneratorTest {
 
     /**
      * Tests a field by its test name and converting it into file names.
-     * @param theFieldName
-     * @throws IOException
+     * @param theTestCaseName the name of the test case
+     * @throws IOException if there is no test pair or an IO error
      */
-    private void test(final String theFieldName) throws IOException {
-        test(theFieldName + "_input.txt", theFieldName + "_output.txt");
+    private void test(final String theTestCaseName) throws IOException {
+        test(theTestCaseName + "_input.txt", theTestCaseName + "_output.txt");
     }
 
     /**
