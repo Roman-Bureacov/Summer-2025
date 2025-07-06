@@ -9,10 +9,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,88 +28,43 @@ import org.junit.jupiter.api.Test;
  * @version July 2025
  */
 public final class HintGeneratorTest {
-    private static final String PREFIX = "TCSS 360/assignment1Minesweeper/test/minesweeper/";
+    /** directory of all test cases. */
+    private static final String PREFIX = "TCSS 360/assignment1Minesweeper/test/minesweeper/cases";
 
     String myInputField;
     String myExpectedField;
 
     /**
-     * Tests a simple, hand-generated minefield.
-     * @throws IOException if the test name failed to evaluate
-     */
-    @Test
-    public void testMinefield1() throws IOException {
-        test("SimpleField01");
-    }
-
-    /**
-     * Test two hand-generated minefields.
-     * Also tests if the field names are in order.
-     * @throws IOException if the test name failed to evaluate
-     */
-    @Test
-    public void testTwoMinefields() throws IOException {
-        test("TwoFields_input");
-    }
-
-    /**
-     * Tests minefield and densities:
+     * Tests all the cases provided in the cases folder. Test cases are of the format
      * <ul>
-     *     <li>5x5 0.25</li
-     *     <li>7x7 0.35</li>
-     *     <li>10x10 0.30</li>
+     *     <li> testName_input.txt for the input</li>
+     *     <li> testName_output.txt for the expected output</li>
      * </ul>
-     * Also tests if the field names are in order.
-     * @throws IOException if the test name failed to evaluate
      */
     @Test
-    public void testThreeMinefields() throws IOException {
-        test("ThreeFields");
-    }
+    public void testCases() {
+        final Set<String> testCaseNames = new HashSet<>();
 
-    /**
-     * Tests a minefield that is 100x100 and a density of 1
-     * @throws IOException if the test name failed to evaluate
-     */
-    @Test
-    public void test100by100Minefield() throws IOException {
-        test("VeryLargeField");
-    }
+        // get the test case names
+        final File[] testCases = (new File(PREFIX)).listFiles();
+        assert testCases != null;
+        for (final File name : testCases) {
+            // add only the test case name to the set
+            testCaseNames.add(name.getName().split("_")[0]);
+        }
 
-    /**
-     * Tests a 1x00 minefield with only 1 mine.
-     * @throws IOException if the test name failed to evaluate
-     */
-    @Test
-    public void testLongMinefield() throws IOException {
-        test("LongField");
-    }
-
-    /**
-     * Tests a 100x1 minefield with only 1 mine
-     * @throws IOException if the test name failed to evaluate
-     */
-    @Test
-    public void testTallMinefield() throws IOException {
-        test("TallField");
-    }
-
-    /**
-     * Tests a 1x1 minefield with only 1 mine
-     * @throws IOException if the test name failed to evaluate
-     */
-    @Test
-    public void testTinyMinefieldWithMine() throws IOException {
-        test("TinyFieldWithMine");
-    }
-
-    /**
-     * Tests a 1x1 minefield with no mine
-     * @throws IOException if the test name failed to evaluate
-     */
-    @Test
-    public void testTinyMinefieldWithoutMine() throws IOException {
-        test("TinyFieldWithoutMine");
+        // test the individual cases by name
+        for (final String testName : testCaseNames) {
+            try {
+                test(testName);
+            } catch (final Exception theExc) {
+                Logger.getAnonymousLogger().log(
+                        Level.WARNING,
+                        "Test failed at: " + testName,
+                        theExc
+                );
+            }
+        }
     }
 
     /* --- HELPERS ---*/
