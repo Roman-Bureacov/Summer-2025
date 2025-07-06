@@ -144,7 +144,7 @@ public final class HintGeneratorTest {
         assertEquals(
                 myExpectedField,
                 expectedOut,
-                "Unequal minefields"
+                "Unequal minefields at "
         );
     }
 }
