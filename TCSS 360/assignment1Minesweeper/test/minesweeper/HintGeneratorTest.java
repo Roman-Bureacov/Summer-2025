@@ -58,7 +58,7 @@ public final class HintGeneratorTest {
                     No such absolute directory found: %s
                     """.formatted(
                             PREFIX,
-                            System.getProperty("user.dir") + PREFIX
+                            System.getProperty("user.dir") + File.separator +  PREFIX
                     )
             );
         } else if (testCases == null) {
@@ -69,7 +69,7 @@ public final class HintGeneratorTest {
                     Absolute: %s
                     """.formatted(
                             PREFIX,
-                            System.getProperty("user.dir") + PREFIX
+                            System.getProperty("user.dir") + File.separator + PREFIX
                     ));
         }
 
