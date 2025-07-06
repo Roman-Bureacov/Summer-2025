@@ -32,9 +32,6 @@ public final class HintGeneratorTest {
     private static final String PREFIX =
             Path.of("TCSS 360", "assignment1Minesweeper", "test", "minesweeper", "cases").toString();
 
-    String myInputField;
-    String myExpectedField;
-
     /**
      * Tests all the cases provided in the cases folder. Test cases are of the format:
      * <ul>
@@ -108,28 +105,19 @@ public final class HintGeneratorTest {
     }
 
     /**
-     * Tests a minefield by two file names: the input and the expected output.
-     * @param theInputField the file name for the input minefield
-     * @param theOutputField the file name for the expected output
-     * @throws IOException if the file names failed to resolve
-     */
-    private void test(final String theInputField, final String theOutputField)
-        throws IOException {
-
-        // assemble strings
-        myInputField = Files.readString(Path.of(PREFIX, theInputField));
-        myExpectedField = Files.readString(Path.of(PREFIX, theOutputField));
-
-        test();
-    }
-
-    /**
      * Tests the minefields stored in the instance variables. Redirects system input and output
      * streams to objects that can be compared for equality.
+     * @param theInputField the name of the text file that is the input minefield
+     * @param theOutputField the name of the text file that is the output minefield
      */
-    private void test() {
+    private void test(final String theInputField, final String theOutputField) throws IOException {
+
+        // assemble strings
+        final String inputField = Files.readString(Path.of(PREFIX, theInputField));
+        final String expectedField = Files.readString(Path.of(PREFIX, theOutputField));
+
         // redirect input and output
-        final ByteArrayInputStream input = new ByteArrayInputStream(myInputField.getBytes());
+        final ByteArrayInputStream input = new ByteArrayInputStream(inputField.getBytes());
         System.setIn(input);
         final ByteArrayOutputStream output = new ByteArrayOutputStream();
         System.setOut(new PrintStream(output));
@@ -138,13 +126,17 @@ public final class HintGeneratorTest {
         HintGenerator.main();
 
         // normalize newlines, one or both may have the carriage return
-        final String expectedOut = output.toString().replaceAll("\r", "");
-        myExpectedField = myExpectedField.replaceAll("\r", "");
+        final String actualOut = output.toString().replaceAll("\r", "");
+        final String expectedOut = expectedField.replaceAll("\r", "");
 
         assertEquals(
-                myExpectedField,
                 expectedOut,
-                "Unequal minefields at "
+                actualOut,
+                """
+                Unequal minefields at
+                %s
+                %s
+                """.formatted(theInputField, theOutputField)
         );
     }
 }
